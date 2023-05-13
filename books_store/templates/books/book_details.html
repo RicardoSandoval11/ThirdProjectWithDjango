@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+
+{% block css %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+{% endblock css %}
+
+{% block title %} Book store | Book Details {% endblock title %}
+
+
+{% block content %}
+
+    {% include 'includes/header.html' %}
+
+    <div class="w-full flex h-screen flex-col">
+        <div class="w-full flex flex-wrap max-w-[1400px] mx-auto">
+            <div class="w-full lg:w-4/12 p-3 justify-center">
+                <img src="{{book.image.url}}" alt="{{book.title}}" class="rounded-md shadow-md w-auto max-h-[500px] mx-auto">
+            </div>
+            <div class="w-full lg:w-8/12 p-3">
+                <div class="w-full text-center lg:text-left">
+                    <h1 class="text-xl lg:text-2xl font-extrabold uppercase">{{book.name}}</h1>
+                </div>
+                <div class="w-full text-center lg:text-left mt-3">
+                    <h2 class="text-lg lg:text-xl font-bold">Normal Price: ${{book.sell_price}}</h2>
+                    
+                    {% if book.is_offer %}
+                        <h2 class="text-lg lg:text-xl font-bold text-green-400">Offer Price: ${{book.offer_price}}</h2>
+                    {% endif %}
+                </div>
+                <div class="w-full text-center lg:text-left mt-3 text-neutral-400">
+                    {{ book.description|safe }}
+                </div>
+                <div class="w-full flex flex-wrap items-center">
+                    <hr class="h-px my-8 bg-neutral-300 border-0 dark:bg-gray-700 w-full">
+                    
+                    {% if book.stock > 0 %}
+                        <form method="post" action="/car/add-product" class="w-7/12 lg:w-4/12 flex justify-center lg:justify-start">{% csrf_token %}
+                            <input type="hidden" name="bookId" value="{{book.id}}">
+                            <input type="number" name="quantity" id="quantity" min="1" class="rounded-full w-4/12 mr-2" value="1" required="required">
+                            <button class="bg-primary text-white hover:bg-blue-700 px-3 py-1 rounded-full w-8/12" type="submit">Add to Cart</button>
+                        </form>
+                    {% else %}
+                        <div class="w-3/12 flex justify-center lg:justify-start">
+                            <span class="text-xl font-bold text-[#f00]">Out of stock</span>
+                        </div>
+                    {% endif %}
+                        
+                    <form action="{% url 'wishlist:add-item' %}" method="post" class="w-4/12 pl-2">{% csrf_token %}
+                        <input type="hidden" name="book_id" value="{{book.id}}">
+                        <button type="submit" class="bg-primary text-white hover:bg-blue-700 px-3 py-2 rounded-full flex justify-center items-center">
+                            <span class="material-symbols-outlined">favorite</span>
+                        </button>
+                    </form>
+                    <hr class="h-px my-8 bg-neutral-300 border-0 dark:bg-gray-700 w-full">
+                </div>
+            </div>
+            <div class="w-full mt-8">
+                <div class="w-full">
+                    <h2 class="text-center font-bold text-xl uppercase mt-2">WE HAVE FOUND OTHER PRODUCTS YOU MAY LIKE!</h2>
+                    <hr class="h-px my-4 bg-neutral-300 border-0 dark:bg-gray-700 w-full mx-auto">
+                </div>
+                <div class="w-full flex mt-6 flex-wrap justify-around">
+                    {% for book in related_books %}
+                        <div class="flex flex-wrap w-6/12 lg:w-3/12 p-2 justify-center">
+                            <div class="w-full">
+                                <a href="/books/details/{{book.id}}">
+                                    <img 
+                                        src="{{book.image.url}}" 
+                                        alt="{{book.title}}"
+                                        class="w-auto hover:shadow-lg transform hover:translate-y-[-10px] max-h-[300px] mx-auto"    
+                                    >
+                                </a>
+                            </div>
+                            <div class="w-full">
+                                <a href="/books/details/{{book.id}}">
+                                    <h2 class="text-md text-primary my-2">
+                                        {{book.name}}
+                                    </h2>
+                                </a>
+                            </div>
+                            <div class="w-full">
+                                <span class="font-extrabold text-lg">$ {{book.sell_price}}</span>
+                            </div>
+                            {% if book.is_offer %}
+                                <div class="w-full">
+                                    <span class="font-semibold text-md text-green-400">Offer: $ {{book.offer_price}}</span>
+                                </div>
+                            {% endif %}
+                            <div class="w-full flex justify-start">
+                                <form method="post" action="/car/add-product" class="w-full flex justify-center">{% csrf_token %}
+                                    <input type="hidden" name="bookId" value="{{book.id}}">
+                                    <button class="bg-primary text-white hover:bg-blue-700 px-3 py-1 rounded-full">Add to Cart</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %} 
+                </div>
+            </div>
+            <div class="w-full mt-8">
+                <div class="w-full">
+                    <h4 class="w-full text-left font-extrabold text-neutral-500 text-2xl uppercase mt-2 lg:w-11/12 mx-auto p-2">More Information</h4>
+                    <hr class="h-px my-4 bg-neutral-300 border-0 dark:bg-gray-700 w-full mx-auto">
+                </div>
+                <div class="w-full flex mt-6 flex-wrap mb-10 lg:w-11/12 mx-auto p-2">
+                    {{book.details |safe}}
+                </div>
+            </div>
+        </div>
+        {% include 'includes/footer.html' %}
+    </div>
+    
+{% endblock content %}

@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block title %} Book store | Admin panel {% endblock title %}
+
+{% block css %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+{% endblock css %}
+    
+{% block content %}
+
+    {% include 'includes/header.html' %}
+
+    <div class="w-full h-screen flex flex-col">
+        <div class="w-full max-w-[1400px] mx-auto">
+            <div class="w-full mt-3 flex items-center">
+                <div class="w-6/12 py-4 flex justify-center px-4">
+                    <h1 class="text-md text-center md:text-4xl md:text-left font-semibold text-primary">Welcome Back {{user.full_name}}</h1>
+                </div>
+                <div class="w-6/12 py-4 flex items-center justify-center">
+                </div>
+            </div>
+            <div class="w-full p-5 flex flex-wrap justify-center">
+                <div class="w-full md:w-3/12 mb-2 flex justify-center px-0 md:px-4">
+                    <a href="{% url 'books:my-books' %}" class="text-white bg-primary px-4 py-2 hover:bg-blue-500 font-semibold rounded-md text-lg text-center w-full">My Books</a>
+                </div>
+                <div class="w-full md:w-3/12 mb-2 flex justify-center px-0 md:px-4">
+                    <a href="{% url 'order:all-orders' %}" class="text-white bg-primary px-4 py-2 hover:bg-blue-500 font-semibold rounded-md text-lg text-center w-full">Orders</a>
+                </div>
+                <div class="w-full md:w-3/12 mb-2 flex justify-center px-0 md:px-4">
+                    <a href="{% url 'order:pending-orders' %}" class="text-white bg-primary px-4 py-2 hover:bg-blue-500 font-semibold rounded-md text-lg text-center w-full">Pending Orders</a>
+                </div>
+                <div class="w-full md:w-3/12 mb-2 flex justify-center px-0 md:px-4">
+                    <a href="{% url 'auth:all-users' %}" class="text-white bg-primary px-4 py-2 hover:bg-blue-500 font-semibold rounded-md text-lg text-center w-full">Users</a>
+                </div>
+            </div>
+            <div class="w-full my-8 flex justify-center md:justify-around flex-wrap">
+                <div class="w-full md:w-5/12 xl:w-[310px] m-2 shadow-md">
+                    <div class="w-full text-cyan-500">
+                        <div class="w-full p-3 flex justify-between">
+                            <div class="w-6/12 text-center" style="font-size: 25px;">
+                                {{current_month_orders}}
+                            </div>
+                            <div class="w-6/12 text-center">
+                                <span class="material-symbols-outlined" style="font-size: 25px;">
+                                    shopping_cart_checkout
+                                </span>
+                            </div>
+                        </div>
+                        <div class="w-full p-3">
+                            <h2 class="text-lg text-neutral-400">Sales</h2>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 min-h-[50px]">
+
+                    </div>
+                </div>
+                <div class="w-full md:w-5/12 xl:w-[310px] m-2 shadow-md">
+                    <div class="w-full text-pink-500">
+                        <div class="w-full p-3 flex justify-between">
+                            <div class="w-6/12 text-center" style="font-size: 25px;">
+                                ${{revenue_of_month}}
+                            </div>
+                            <div class="w-6/12 text-center">
+                                <span class="material-symbols-outlined" style="font-size: 25px;">
+                                    grade
+                                </span>
+                            </div>
+                        </div>
+                        <div class="w-full p-3">
+                            <h2 class="text-lg text-neutral-400">Revenue</h2>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-[50px]">
+
+                    </div>
+                </div>
+                <div class="w-full md:w-5/12 xl:w-[310px] m-2 shadow-md">
+                    <div class="w-full text-yellow-500">
+                        <div class="w-full p-3 flex justify-between">
+                            <div class="w-6/12 text-center" style="font-size: 25px;">
+                                ${{max_sale_by_month}}
+                            </div>
+                            <div class="w-6/12 text-center">
+                                <span class="material-symbols-outlined">
+                                    military_tech
+                                </span>
+                            </div>
+                        </div>
+                        <div class="w-full p-3">
+                            <h2 class="text-lg text-neutral-400">Highest sale</h2>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gradient-to-r from-yellow-300 to-yellow-500 min-h-[50px]">
+
+                    </div>
+                </div>
+                <div class="w-full md:w-5/12 xl:w-[310px] m-2 shadow-md">
+                    <div class="w-full text-green-500">
+                        <div class="w-full p-3 flex justify-between">
+                            <div class="w-6/12 text-center" style="font-size: 25px;">
+                                {{out_of_stock_books}}
+                            </div>
+                            <div class="w-6/12 text-center">
+                                <span class="material-symbols-outlined">
+                                    warning
+                                </span>
+                            </div>
+                        </div>
+                        <div class="w-full p-3">
+                            <h2 class="text-lg text-neutral-400">Out of stock</h2>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gradient-to-r from-green-300 to-green-500 min-h-[50px]">
+
+                    </div>
+                </div>
+            </div>
+            <div class="hidden" id="orders-data">
+                
+                {% for order in orders_of_month %}
+                    <div id="order">
+                        {{order.total}} - {{order.created_at}} - {{order.revenue}}
+                    </div>
+                {% endfor %}
+                    
+            </div>
+            <div class="w-full flex flex-wrap my-2 justify-between">
+                
+                <div class="w-full mb-2 flex flex-wrap">
+                    <div class="w-full">
+                        <h2 class="text-lg md:text-xl uppercase text-center font-semibold">Sales Each Day</h2>
+                    </div>
+                    <div class="w-full mb-2 flex flex-wrap" id="chart3">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="w-full flex flex-wrap my-2 justify-between">
+                <div class="w-full md:w-5/12 text-center mb-4">
+                    <div class="w-full">
+                        <h2 class="text-lg md:text-xl uppercase text-center font-semibold">Sales of the month</h2>
+                    </div>
+                    <div id="chart" class="w-full mx-auto max-w-[600px]">
+        
+                    </div>
+                </div>
+                <div class="w-full md:w-5/12 text-center mb-4">
+                    <div class="w-full">
+                        <h2 class="text-lg md:text-xl uppercase text-center font-semibold">Revenues of the month</h2>
+                    </div>
+                    <div id="chart2" class="w-full mx-auto max-w-[600px]">
+        
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'includes/footer.html' %}
+    </div>
+    
+{% endblock content %}

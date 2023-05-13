@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Book store | Error {% endblock title %}
+
+
+{% block content %}
+
+    {% include 'includes/header.html' %}
+
+    <div class="h-screen flex items-center justify-center">  
+        <div class="p-4 mb-4 text-sm rounded-lg bg-red-800 text-white" role="alert">
+            <span class="font-medium">Invalid Code</span>
+          </div> 
+    </div>
+    
+{% endblock content %}

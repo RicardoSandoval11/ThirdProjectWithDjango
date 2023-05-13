@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Book store | Wishlist {% endblock title %}
+
+
+{% block css %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+{% endblock css %}
+    
+
+{% block content %}
+
+    {% include 'includes/header.html' %}
+
+    <div class="h-screen w-full flex flex-col">
+        <div class="w-full max-w-[1400px] mx-auto">
+            {% if wishlist_items %}
+            <div class="w-full md:w-10/12 mx-auto min-h-[80px] flex items-center flex-wrap my-6">
+                <h1 class="text-3xl font-bold text-center md:text-left w-full">Your Favorite Items</h1>
+                <h2 class="text-lg text-neutral-400 text-center md:text-left w-full font-bold">There are {{total_items}} book in your wishlist</h2>
+            </div>
+            <div class="w-full md:w-10/12 mx-auto rounded-md shadow-sm px-2 flex flex-wrap mb-10">
+                <div class="w-full py-4 flex items-center border-b-2 border-[#f1f1f1]">
+                    <div class="w-3/12 md:w-4/12 font-bold text-left">
+                        <h3>Product</h3>
+                    </div>
+                    <div class="w-3/12 md:w-2/12 text-center font-bold">
+                        <h3>Price</h3>
+                    </div>
+                    <div class="w-3/12 md:w-2/12 text-center font-bold">
+                        <h3>Stock Status</h3>
+                    </div>
+                    <div class="w-3/12 md:w-2/12 text-center font-bold">
+                        <h3>Action</h3>
+                    </div>
+                    <div class="w-3/12 md:w-2/12 text-center font-bold">
+                        <h3>Remove</h3>
+                    </div>
+                </div>
+                {% for item in wishlist_items %}
+                <div class="w-full py-4 flex items-center border-b-2 border-[#f1f1f1]">
+                    <div class="w-3/12 md:w-4/12 flex items-center">
+                        <div class="w-3/12">
+                            <img src="{{item.book.image.url}}" alt="{{item.book.name}}" class="w-full h-auto">
+                        </div>
+                        <div class="w-9/12 ml-1 hidden md:flex">
+                            <a href="{% url 'books:book-details' item.book.id %}"><h3 class="font-bold text-md text-neutral-500">{{item.book.name}}</h3></a>
+                        </div>
+                    </div>
+                    <div class="w-2/12 text-center font-bold">
+                        
+                        {% if item.book.is_offer %}
+                            <h3>${{item.book.offer_price}}</h3>
+                        {% else %}
+                            <h3>${{item.book.sell_price}}</h3>
+                        {% endif %}
+                            
+                    </div>
+                    <div class="w-3/12 md:w-2/12 flex justify-center font-bold">
+                        
+                        {% if item.book.stock > 0 %}
+                            <div class="w-10/12 rounded-lg bg-green-100 text-green-600 text-sm py-1 text-center">
+                                In Stock
+                            </div>
+                        {% else %}
+                            <div class="w-10/12 rounded-lg bg-red-100 text-red-600 text-sm py-1 text-center">
+                                Stock Out
+                            </div>
+                        {% endif %}
+                            
+                    </div>
+                    <div class="w-3/12 md:w-2/12 text-center font-bold">
+                        {% if item.book.stock > 0 %}
+                            <form action="{% url 'carshop:add-product' %}" method="post">{% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <input type="hidden" name="bookId" value="{{item.book.id}}">
+                                <input type="submit" value="Add to cart" class="px-2 py-1 rounded-md bg-primary hover:bg-blue-500 text-white text-sm md:text-md md:font-semibold">
+                            </form>
+                        {% else %}
+                            <a href="{% url 'books:book-category' item.book.category.id %}" class="px-2 py-1 rounded-md bg-black hover:bg-blue-500 text-white font-semibold">Related</a>
+                        {% endif %}
+                    </div>
+                    <div class="w-3/12 md:w-2/12 text-center font-bold">
+                        <form action="{% url 'wishlist:remove-item' %}" method="post">{% csrf_token %}
+                            <input type="hidden" name="wl_item_id" value="{{item.id}}">
+                            <button type="submit">
+                                <span class="material-symbols-outlined text-[#f00] hover:text-blue-500">
+                                    delete
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+                <div
+                class="flex w-full rounded-lg border-l-[6px] border-transparent bg-white px-7 py-8 shadow-md md:p-9 max-w-[1000px] mx-auto my-10"
+                >
+                <div
+                    class="mr-5 flex h-9 w-full max-w-[36px] items-center justify-center rounded-lg bg-warning bg-opacity-30"
+                >
+                    <svg
+                    width="19"
+                    height="16"
+                    viewBox="0 0 19 16"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    >
+                    <path
+                        d="M1.50493 16H17.5023C18.6204 16 19.3413 14.9018 18.8354 13.9735L10.8367 0.770573C10.2852 -0.256858 8.70677 -0.256858 8.15528 0.770573L0.156617 13.9735C-0.334072 14.8998 0.386764 16 1.50493 16ZM10.7585 12.9298C10.7585 13.6155 10.2223 14.1433 9.45583 14.1433C8.6894 14.1433 8.15311 13.6155 8.15311 12.9298V12.9015C8.15311 12.2159 8.6894 11.688 9.45583 11.688C10.2223 11.688 10.7585 12.2159 10.7585 12.9015V12.9298ZM8.75236 4.01062H10.2548C10.6674 4.01062 10.9127 4.33826 10.8671 4.75288L10.2071 10.1186C10.1615 10.5049 9.88572 10.7455 9.50142 10.7455C9.11929 10.7455 8.84138 10.5028 8.79579 10.1186L8.13574 4.75288C8.09449 4.33826 8.33984 4.01062 8.75236 4.01062Z"
+                        fill="#FBBF24"
+                    ></path>
+                    </svg>
+                </div>
+                <div class="w-full">
+                    <h5 class="mb-3 text-lg font-semibold text-[#9D5425]">Your Wishlist is empty</h5>
+                    <p class="text-base leading-relaxed text-[#D0915C]">
+                    You don't have books in your wishlist. Check our website to find a book you like! 
+                    </p>
+                </div>
+                </div>
+            {% endif %}
+        </div>
+        {% include 'includes/footer.html' %}
+    </div>
+{% endblock content %}

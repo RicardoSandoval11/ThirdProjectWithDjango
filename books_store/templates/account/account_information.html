@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Book store | Account information {% endblock title %}
+
+
+{% block content %}
+
+    {% include 'includes/header.html' %}
+    
+    <div class="w-full h-screen flex flex-col">
+        <div class="w-full max-w-[1400px] mx-auto h-screen flex items-center justify-center flex-wrap">
+            <div class="w-full">
+                <div class="w-full max-w-[600px] mx-auto flex justify-center mb-5">
+                    <h1 class="text-2xl text-center font-bold">Account Information</h1>
+                </div>
+                <form method="post" class="w-full max-w-[600px] mx-auto flex flex-wrap">{% csrf_token %}
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 w-full text-center" role="alert">
+                                <span class="font-medium">{{ error }}</span>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                    <input type="hidden" name="id" value="{{user.id}}">
+                    <div class="w-full flex mb-3">
+                        <input 
+                            type="text" 
+                            name="full_name" 
+                            id="id_full_name"
+                            value="{{user.full_name}}"
+                            class='border-neutral-400 w-full rounded-md border bg-[#FCFDFE] py-3 px-5 text-base text-body-color placeholder-[#ACB6BE] outline-none focus:border-primary focus-visible:shadow-none'
+                        >
+                    </div>
+                    <div class="w-full flex mb-3">
+                        <input 
+                            type="text" 
+                            name="email" 
+                            id="id_email"
+                            value="{{user.email}}"
+                            class='border-neutral-400 w-full rounded-md border bg-[#FCFDFE] py-3 px-5 text-base text-body-color placeholder-[#ACB6BE] outline-none focus:border-primary focus-visible:shadow-none'
+                        >
+                    </div>
+                    <div class="w-full flex mb-3 justify-center">
+                        <input type="submit" value="Save" class="px-4 py-2 rounded-md bg-primary text-white text-center hover:bg-blue-500">
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% include 'includes/footer.html' %}
+    </div>
+{% endblock content %}

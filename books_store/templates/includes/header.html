@@ -1,0 +1,130 @@
+<header
+  x-data="
+        {
+          navbarOpen: false
+        }
+      "
+  class="flex w-full items-center bg-white"
+>
+  <div class="container mx-auto">
+    <div class="relative -mx-4 flex items-center justify-between">
+      <div class="w-60 max-w-full px-4">
+        <a href="{% url 'home_app:home' %}" class="block w-full py-5">
+          <span class="text-2xl">Book Shop</span>
+        </a>
+      </div>
+      <div class="flex w-full items-center justify-between px-4">
+        <div>
+          <button
+            @click="navbarOpen = !navbarOpen"
+            :class="navbarOpen && 'navbarTogglerActive' "
+            id="navbarToggler"
+            class="ring-primary absolute right-4 top-1/2 block -translate-y-1/2 rounded-lg px-3 py-[6px] focus:ring-2 lg:hidden"
+          >
+            <span
+              class="bg-body-color relative my-[6px] block h-[2px] w-[30px]"
+            ></span>
+            <span
+              class="bg-body-color relative my-[6px] block h-[2px] w-[30px]"
+            ></span>
+            <span
+              class="bg-body-color relative my-[6px] block h-[2px] w-[30px]"
+            ></span>
+          </button>
+          <nav
+            :class="!navbarOpen && 'hidden' "
+            id="navbarCollapse"
+            class="absolute z-50 right-4 top-full w-full max-w-[250px] rounded-lg bg-white py-5 px-3 shadow lg:static lg:block lg:w-full lg:max-w-full lg:shadow-none"
+          >
+            <ul class="block lg:flex">
+              <li>
+                <a
+                  href="{% url 'home_app:home' %}"
+                  class="text-dark hover:text-primary flex py-2 text-base font-medium lg:ml-9 lg:inline-flex"
+                >
+                  Home
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/categories/all"
+                  class="text-dark hover:text-primary flex py-2 text-base font-medium lg:ml-9 lg:inline-flex"
+                >
+                  Categories
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{% url 'books:all-books' %}"
+                  class="text-dark hover:text-primary flex py-2 text-base font-medium lg:ml-9 lg:inline-flex"
+                >
+                  Books
+                </a>
+              </li>
+              {% if user.is_authenticated %}
+              <li>
+                <a
+                  href="/car/my-carshop"
+                  class="text-dark hover:text-primary flex py-2 text-base font-medium lg:ml-9 lg:inline-flex"
+                >
+                  Car Shop
+                </a>
+              </li>
+              {% if user.ocupation == '0' %}
+              <li>
+                <a
+                  href="{% url 'admin_app:admin-panel' %}"
+                  class="text-dark hover:text-primary flex py-2 text-base font-medium lg:ml-9 lg:inline-flex"
+                >
+                  Admin
+                </a>
+              </li>
+            {% endif %}
+              <li>
+                <a
+                  href="/user/account"
+                  class="text-dark hover:text-primary flex py-2 text-base font-medium lg:ml-9 lg:inline-flex"
+                >
+                  Account
+                </a>
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+        <div class="hidden justify-end pr-16 sm:flex lg:pr-0">
+          
+          {% if user.is_authenticated %}
+            <a
+              href="{% url 'auth:logout' %}"
+              class="text-dark hover:text-primary py-3 px-7 text-base font-medium"
+            >
+              Logout
+            </a>
+          {% else %}
+            <a
+              href="{% url 'auth:login' %}"
+              class="text-dark hover:text-primary py-3 px-7 text-base font-medium"
+            >
+              Login
+            </a>
+            <a
+              href="{% url 'auth:register' %}"
+              class="bg-primary rounded-lg py-3 px-7 text-base font-medium text-white hover:bg-opacity-90"
+            >
+              Sign Up
+            </a>
+          {% endif %}
+            
+        </div>
+      </div>
+    </div>
+    <div class="w-full">
+      <form action="{% url 'books:all-books' %}" method="get" class="w-full flex justify-center md:justify-start px-3 py-4 border-b-2 border-[#f1f1f1]">
+        <input type="hidden" name="filter_by" value="name">
+        <input type="text" name="value" placeholder="Find a book" class="mx-1 rounded-md border-[#f1f1f1] text-neutral-500 w-8/12 max-w-[300px]">
+        <input type="submit" value="Search" class="px-3 py-2 bg-primary text-white text-center rounded-md mx-1">
+      </form>
+    </div>
+  </div>
+</header>

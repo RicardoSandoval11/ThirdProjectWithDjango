@@ -1,0 +1,81 @@
+from django.urls import path
+#
+from .views import (
+    AccountInformationView,
+    ActivateAccount,
+    AddShippingAddressView,
+    AllUsersView,
+    EnableUser,
+    DisableUser,
+    LoginView,
+    LogoutView,
+    RecoverPasswordRequestView,
+    RegisterView,
+    UpdatepasswordView,
+    UserAccountView,
+)
+
+app_name = 'auth'
+
+urlpatterns = [
+    path(
+        'auth/login',
+        LoginView.as_view(),
+        name='login'
+    ),
+    path(
+        'auth/register',
+        RegisterView.as_view(),
+        name='register'
+    ),
+    path(
+        'auth/activate-account/<token>',
+        ActivateAccount.as_view(),
+        name='activate-account'
+    ),
+    path(
+        'auth/logout',
+        LogoutView.as_view(),
+        name='logout'
+    ),
+    path(
+        'auth/recover-password',
+        RecoverPasswordRequestView.as_view(),
+        name='recover-password'
+    ),
+    path(
+        'auth/update-password/<token>',
+        UpdatepasswordView.as_view(),
+        name='update-password'
+    ),
+    path(
+        'user/account',
+        UserAccountView.as_view(),
+        name='user-account'
+    ),
+    path(
+        'user/account-information',
+        AccountInformationView.as_view(),
+        name='account-information'
+    ),
+    path(
+        'user/add-address',
+        AddShippingAddressView.as_view(),
+        name='add-address'
+    ),
+    path(
+        'user/all-users',
+        AllUsersView.as_view(),
+        name='all-users'
+    ),
+    path(
+        'user/enable-user',
+        EnableUser.as_view(),
+        name='enable-user'
+    ),
+    path(
+        'user/disable-user',
+        DisableUser.as_view(),
+        name='disable-user'
+    )
+]

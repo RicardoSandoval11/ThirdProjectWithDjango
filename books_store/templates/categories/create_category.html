@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Book store | Add category {% endblock title %}
+
+
+{% block content %}
+
+    {% include 'includes/header.html' %}
+    <div class="w-full h-screen flex flex-col">
+        <div class="w-full max-w-[1400px] mx-auto flex flex-wrap justify-center">
+            <div class="w-full my-4 md:my-8 flex justify-center">
+                <h1 class="text-xl md:text-2xl font-semibold">Category Information</h1>
+            </div>
+            <div class="max-w-[800px] flex flex-wrap">
+                <form method="post" class="w-full flex flex-wrap justify-between" enctype="multipart/form-data">{% csrf_token %}
+                    <div class="w-full flex flex-wrap max-w-[600px] mx-auto">
+                        {% if form.errors %}
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 w-full" role="alert">
+                                        <span class="font-medium">{{ error }}</span>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div class="w-full mb-2">
+                        {{form.name}}
+                    </div>
+                    <div class="w-full mb-2">
+                        {{form.description}}
+                    </div>
+                    <div class="w-full mb-2">
+                        {{form.image}}
+                    </div>
+                    <div class="w-full my-4 flex justify-center">
+                        <input type="submit" value="Create" class="w-[100px] py-2 rounded-md bg-primary text-white hover:bg-blue-500">
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% include 'includes/footer.html' %}
+    </div>
+
+    
+{% endblock content %}

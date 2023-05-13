@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Book store | Checkout {% endblock title %}
+
+
+{% block css %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+{% endblock css %}
+    
+
+{% block content %}
+
+    {% include 'includes/header.html' %}
+    <div class="h-screen flex flex-col w-full">
+        <div class="container w-full max-w-[1400px] flex flex-wrap justify-center mx-auto">
+            <div class="my-8 w-full justify-center md:justify-start p-2">
+                <h1 class="font-bold"><span class="text-2xl md:text-4xl">Checkout </span></h1>
+                <p><span class="text-neutral-400 font-bold text-lg">There are {{total_items}} products in your cart</span></p>
+            </div>
+            <div class="w-full lg:w-7/12 flex flex-wrap">
+                <div class="w-full mb-3">
+                    <h2 class="font-bold text-xl text-left">Billing Details</h2>
+                </div>
+                <div class="w-full">
+                    <form method="post" class="w-full flex flex-wrap">{% csrf_token %}
+                        <div class="w-full lg:w-6/12 flex mb-3">
+                            {{form.first_name}}
+                        </div>
+                        <div class="w-full lg:w-6/12 flex mb-3 justify-end">
+                            {{form.last_name}}
+                        </div>
+                        <div class="w-full lg:w-6/12 flex mb-3">
+                            {{form.phone}}
+                        </div>
+                        <div class="w-full lg:w-6/12 flex mb-3 justify-end">
+                            {{form.postcode}}
+                        </div>
+                        <div class="w-full lg:w-6/12 flex mb-3 items-center justify-center text-neutral-500">
+                            <label for="address1">Delviery Address 1</label>
+                        </div>
+                        <div class="w-full lg:w-6/12 flex mb-3 justify-end">
+                            {{form.address1}}
+                        </div>
+                        <div class="w-full lg:w-6/12 flex mb-3 items-center justify-center text-neutral-500">
+                            <label for="address2">Delviery Address 2</label>
+                        </div>
+                        <div class="w-full lg:w-6/12 flex mb-3 justify-end">
+                            {{form.address2}}
+                        </div>
+                        <div class="w-full lg:w-6/12 flex mb-3 items-center justify-center text-neutral-500">
+                            <label for="payment_mwthod">Payment Method</label>
+                        </div>
+                        <div class="w-full lg:w-6/12 flex mb-3 justify-end">
+                            {{form.payment_method}}
+                        </div>
+                        <div class="w-full flex mb-3 justify-start">
+                            {{form.comment}}
+                        </div>
+                        <div class="w-full flex mt-3 justify-center">
+                            <input type="submit" value="Place Order" class="bg-primary px-4 py-2 rounded-md text-center text-white hover:bg-blue-500">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="w-full lg:w-4/12 ml-3 p-2 flex flex-wrap">
+                <div class="w-full rounded shadow-md">
+                    <div class="w-full mb-3">
+                        <h2 class="font-bold text-lg text-left">Your Order</h2>
+                    </div>
+                    <div class="bg-neutral-100 w-full rounded-md justify-between flex">
+                        <h3 class="p-2 text-sm font-bold text-center">Product</h3>
+                        <h3 class="p-2 text-sm font-bold text-center">Subtotal</h3>
+                    </div>
+                    {% for product in carshop_items %}
+                        <div class="w-full border-b-2 border-[#f1f1f1] py-2 px-1 flex">
+                            <img src="{{product.book.image.url}}" alt="{{product.book.name}}" class="max-h-[100px] w-auto p-1">
+                            <div class="w-6/12 flex items-center justify-center font-bold">
+                                {{product.book.name|slice:30}}...
+                            </div>
+                            <div class="flex items-center font-bold text-right w-4/12 justify-end">
+                                ${{product.sub_total}}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class=" w-full justify-between flex  items-center py-3">
+                        <h3 class="p-2 text-sm font-bold text-center">Total Payable</h3>
+                        <h3 class="p-2 text-sm font-bold text-center">${{total}}</h3>
+                    </div>
+                </div>
+                <div class="w-full mt-3 roundend shadow-md">
+                    <div class="w-full mb-3 roundend">
+                        <h2 class="font-bold text-lg text-left bg-neutral-100 p-2">Payment Methods</h2>
+                        <div class="my-4 ml-1 flex flex-wrap p-1 w-full lg:w-4/12 h-max">
+                            <span class="font-semibold text-neutral-500 block w-full text-left ml-3 mb-1">We Accept:</span>
+                            <img src="{% static 'imgs/payment.png' %}" alt="payment methods" class="ml-3">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'includes/footer.html' %}
+    </div>
+{% endblock content %}

@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Book store | Home {% endblock title %}
+
+
+{% block content %}
+
+    {% include 'includes/header.html' %}
+    <div class="h-screen w-full flex flex-col">
+        <div class="container w-full max-w-[1400px] flex flex-wrap justify-center mx-auto mb-10">
+            <div class="flex w-full">
+                <div id="default-carousel" class="relative w-full" data-carousel="slide">
+                    <!-- Carousel wrapper -->
+                    <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
+                        <!-- Items -->
+                        {% for category in popular_categories %}
+                            <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                                <div class="absolute z-50 w-full justify-center flex bg-black bg-opacity-50 h-full items-center">
+                                    <a href="/books/all-books?filter_by=category&value={{category.id}}"><h1 class="font-extrabold text-white text-center my-2 text-2xl">{{ category.name }}</h1></a>
+                                </div>
+                                <img src="{{category.image.url}}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="{{category.name}}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <!-- Slider indicators -->
+                    <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2">
+                        {% for counter in popular_categories %}
+                            <button type="button" class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide {{ forloop.counter }}" data-carousel-slide-to="{{ forloop.counter0 }}"></button>
+                        {% endfor %}
+                    </div>
+                    <!-- Slider controls -->
+                    <button type="button" class="absolute top-0 left-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
+                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                            <svg aria-hidden="true" class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                            <span class="sr-only">Previous</span>
+                        </span>
+                    </button>
+                    <button type="button" class="absolute top-0 right-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-next>
+                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full sm:w-10 sm:h-10 bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+                            <svg aria-hidden="true" class="w-5 h-5 text-white sm:w-6 sm:h-6 dark:text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                            <span class="sr-only">Next</span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <div class="w-full flex mt-6 flex-wrap justify-between">
+                <div class="w-full text-center lg:text-left my-4">
+                    <h2 class="font-extrabold text-neutral-400 uppercase text-xl lg:text-2xl">Recently added</h2>
+                </div>
+                {% for book in recent_books_added %}
+                    <div class="flex flex-wrap w-6/12 lg:w-3/12 p-2 justify-center">
+                        <div class="w-full">
+                            <a href="/books/details/{{book.id}}">
+                                <img 
+                                    src="{{book.image.url}}" 
+                                    alt="{{book.title}}"
+                                    class="w-auto hover:shadow-lg transform hover:translate-y-[-10px] max-h-[300px] mx-auto"    
+                                >
+                            </a>
+                        </div>
+                        <div class="w-full">
+                            <a href="/books/details/{{book.id}}">
+                                <h2 class="text-md text-primary my-2">
+                                    {{book.name}}
+                                </h2>
+                            </a>
+                        </div>
+                        <div class="w-full">
+                            <span class="font-extrabold text-lg">$ {{book.sell_price}}</span>
+                        </div>
+                        {% if book.is_offer %}
+                            <div class="w-full">
+                                <span class="font-semibold text-md text-green-400">Offer: $ {{book.offer_price}}</span>
+                            </div>
+                        {% endif %}
+                        <div class="w-full flex justify-start">
+                            
+                            {% if book.stock > 0 %}
+                                <form method="post" action="/car/add-product" class="w-full flex justify-center">{% csrf_token %}
+                                    <input type="hidden" name="bookId" value="{{book.id}}">
+                                    <input type="hidden" name="quantity" id="quantity" value="1" required="required">
+                                    <button class="bg-primary text-white hover:bg-blue-700 px-3 py-1 rounded-full">Add to Cart</button>
+                                </form>
+                            {% else %}
+                                <span class="fotn-bold text-[#f00]">Out of stock</span>
+                            {% endif %}
+                                
+                        </div>
+                    </div>
+                {% endfor %} 
+            </div>
+            <div class="w-full flex mt-6 flex-wrap justify-between">
+                <div class="w-full text-center lg:text-left my-4">
+                    <h2 class="font-extrabold text-neutral-400 uppercase text-xl lg:text-2xl">People's Favorites</h2>
+                </div>
+                {% for book in most_popular_books %}
+                    <div class="flex flex-wrap w-6/12 lg:w-3/12 p-2 justify-center">
+                        <div class="w-full">
+                            <a href="/books/details/{{book.id}}">
+                                <img 
+                                    src="{{book.image.url}}" 
+                                    alt="{{book.title}}"
+                                    class="w-auto hover:shadow-lg transform hover:translate-y-[-10px] max-h-[300px] mx-auto"    
+                                >
+                            </a>
+                        </div>
+                        <div class="w-full">
+                            <a href="/books/details/{{book.id}}">
+                                <h2 class="text-md text-primary my-2">
+                                    {{book.name}}
+                                </h2>
+                            </a>
+                        </div>
+                        <div class="w-full">
+                            <span class="font-extrabold text-lg">$ {{book.sell_price}}</span>
+                        </div>
+                        {% if book.is_offer %}
+                            <div class="w-full">
+                                <span class="font-semibold text-md text-green-400">Offer: $ {{book.offer_price}}</span>
+                            </div>
+                        {% endif %}
+                        <div class="w-full flex justify-start">
+                            
+                            {% if book.stock > 0 %}
+                                <form method="post" action="/car/add-product" class="w-full flex justify-center">{% csrf_token %}
+                                    <input type="hidden" name="bookId" value="{{book.id}}">
+                                    <input type="hidden" name="quantity" id="quantity" value="1" required="required">
+                                    <button class="bg-primary text-white hover:bg-blue-700 px-3 py-1 rounded-full">Add to Cart</button>
+                                </form>
+                            {% else %}
+                                <span class="fotn-bold text-[#f00]">Out of stock</span>
+                            {% endif %}
+                                
+                        </div>
+                    </div>
+                {% endfor %} 
+            </div>
+            <div class="w-full flex mt-6 flex-wrap justify-between">
+                <div class="w-full text-center lg:text-left my-4">
+                    <h2 class="font-extrabold text-neutral-400 uppercase text-xl lg:text-2xl">Best selling books</h2>
+                </div>
+                {% for book in most_sold_books %}
+                    <div class="flex flex-wrap w-6/12 lg:w-3/12 p-2 justify-center">
+                        <div class="w-full">
+                            <a href="/books/details/{{book.id}}">
+                                <img 
+                                    src="{{book.image.url}}" 
+                                    alt="{{book.title}}"
+                                    class="w-auto hover:shadow-lg transform hover:translate-y-[-10px] max-h-[300px] mx-auto"    
+                                >
+                            </a>
+                        </div>
+                        <div class="w-full">
+                            <a href="/books/details/{{book.id}}">
+                                <h2 class="text-md text-primary my-2">
+                                    {{book.name}}
+                                </h2>
+                            </a>
+                        </div>
+                        <div class="w-full">
+                            <span class="font-extrabold text-lg">$ {{book.sell_price}}</span>
+                        </div>
+                        {% if book.is_offer %}
+                            <div class="w-full">
+                                <span class="font-semibold text-md text-green-400">Offer: $ {{book.offer_price}}</span>
+                            </div>
+                        {% endif %}
+                        <div class="w-full flex justify-start">
+                            
+                            {% if book.stock > 0 %}
+                                <form method="post" action="/car/add-product" class="w-full flex justify-center">{% csrf_token %}
+                                    <input type="hidden" name="bookId" value="{{book.id}}">
+                                    <input type="hidden" name="quantity" id="quantity" value="1" required="required">
+                                    <button class="bg-primary text-white hover:bg-blue-700 px-3 py-1 rounded-full">Add to Cart</button>
+                                </form>
+                            {% else %}
+                                <span class="fotn-bold text-[#f00]">Out of stock</span>
+                            {% endif %}
+                                
+                        </div>
+                    </div>
+                {% endfor %} 
+            </div>
+        </div>
+        {% include 'includes/footer.html' %}
+    </div>
+    
+{% endblock content %}
+    
+    

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Book store | Dashboard {% endblock title %}
+
+
+{% block content %}
+
+    {% include 'includes/header.html' %}
+    
+    <div class="w-full h-screen flex flex-col">
+        <div class="w-full max-w-[1400px] mx-auto flex flex-wrap justify-between mb-10">
+            <div class="w-full p-2">
+                <ul>
+                    <li><a href="/user/account" class="p-5 block border-b-2 border-neutral-200 text-neutral-500 hover:text-primary">My Account</a></li>
+                    <li><a href="/order/my-orders" class="p-5 block border-b-2 border-neutral-200 text-neutral-500 hover:text-primary">My Orders</a></li>
+                    <li><a href="{% url 'wishlist:my-wishlist' %}" class="p-5 block border-b-2 border-neutral-200 text-neutral-500 hover:text-primary">My Wish List</a></li>
+                    <li><a href="{% url 'auth:account-information' %}" class="p-5 block border-b-2 border-neutral-200 text-neutral-500 hover:text-primary">Account Information</a></li>
+                </ul>
+            </div>
+            <div class="w-full flex flex-wrap mt-8">
+                <div class="w-full lg:w-6/12 mb-4 lg:mb-0">
+                    <div class="w-full">
+                        <h1 class="text-xl text-primary">My Account</h1>
+                    </div>
+                    <div class="w-full flex flex-wrap p-1 min-h-[230px] max-h-[230px] text-neutral-500">
+                        <div class="w-full bg-neutral-200 p-3 min-h-[47.5px]">
+                            <h2 class="text-xl uppercase">Contact information</h2>
+                        </div>
+                        <div class="bg-neutral-100 w-full min-h-[135px] p-5">
+                            <p>
+                                {{user_information.full_name}}
+                            </p>
+                            <p>
+                                {{user_information.email}}
+                            </p>
+                        </div>
+                        <div class="w-full bg-neutral-200 min-h-[47.5px] p-3">
+                            <a href="{% url 'auth:account-information' %}" class="text-blue-500 text-md">Modify</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full lg:w-6/12 mt-4 lg:mt-0">
+                    <div class="w-full">
+                        <h1 class="text-xl text-primary">Address book</h1>
+                    </div>
+                    <div class="w-full flex flex-wrap p-1 min-h-[230px] max-h-[230px] text-neutral-500">
+                        <div class="w-full bg-neutral-200 p-3 min-h-[47.5px]">
+                            <h2 class="text-xl uppercase">Registered Addresses</h2>
+                        </div>
+                        <div class="bg-neutral-100 w-full min-h-[135px] p-5">
+                            
+                            {% for address in addresses %}
+                                <p class="mb-2">
+                                    <span class="font-bold mb-2">Default Address: </span>{{address.default_address}} <br>
+                                    <span class="font-bold">Shipping Address: </span>{{address.default_shipping_address}}
+                                </p>
+                            {% endfor %}
+                        </div>
+                        <div class="w-full bg-neutral-200 min-h-[47.5px] p-3">
+                            <a href="{% url 'auth:add-address' %}" class="text-blue-500 text-md">Add</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include 'includes/footer.html' %}
+    </div>
+{% endblock content %}

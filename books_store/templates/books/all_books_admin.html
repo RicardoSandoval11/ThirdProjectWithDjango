@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+
+{% block title %} Book store | My books {% endblock title %}
+
+
+{% block content %}
+
+    {% include 'includes/header.html' %}
+    <div class="w-full h-screen flex flex-col">
+        <div class="w-full max-w-[1400px] mx-auto flex flex-wrap justify-center">
+            <div class="w-full my-4 flex justify-center">
+                <div class="w-6/12 flex justify-center">
+                    <a href="{% url 'books:create-book' %}" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-blue-500 font-bold">Add a book</a>
+                </div>
+                <div class="w-6/12 flex justify-center">
+                    <a href="{% url 'categories:all-categories-admin' %}" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-blue-500 font-bold">Categories</a>
+                </div>
+            </div>
+            <div class="w-full flex flex-wrap my-4 mt-8">
+                <table class="w-11/12 mx-auto">
+                    <thead class="border-b-2 border-[#f1f1f1]">
+                        <th class="hidden md:table-cell">#</th>
+                        <th>Book name</th>
+                        <th class="hidden md:table-cell">Stock</th>
+                        <th class="hidden md:table-cell">Offer</th>
+                        <th class="hidden md:table-cell">Public price</th>
+                        <th class="hidden md:table-cell">Purchase price</th>
+                        <th>Actions</th>
+                    </thead>
+                    <tbody>
+                        {% for book in page_obj %}
+                            <tr class="border-b-2 border-[#f1f1f1] py-4">
+                                <td class="text-center hidden md:table-cell">{{book.id}}</td>
+                                <td class="text-center">{{book.name|slice:25}}...</td>
+                                <td class="text-center hidden md:table-cell">{{book.stock}}</td>
+                                {% if book.is_offer %}
+                                    <td class="text-center font-bold text-red-500 hidden md:table-cell">Yes</td>
+                                {% else %}
+                                    <td class="text-center font-bold text-green-500 hidden md:table-cell">No</td>
+                                {% endif %}
+                                
+                                {% if book.is_offer %}
+                                    <td class="text-center hidden md:table-cell">${{book.offer_price}}</td>
+                                {% else %}
+                                    <td class="text-center hidden md:table-cell">${{book.sell_price}}</td>
+                                {% endif %}
+                                <td class="text-center hidden md:table-cell">${{book.purchase_price}}</td>
+                                <td class="flex justify-center">
+                                    <a href="{% url 'books:update-book' book.id %}" class="px-3 py-2 m-1 text-sm md:text-md rounded-md text-white hover:bg-blue-500 bg-primary" value="Edit">Edit</a>
+                                    <form action="{% url 'books:no-stock' %}" method="post">{% csrf_token %}
+                                        <input type="hidden" name="book_id" value="{{book.id}}">
+                                        <input type="submit" class="px-3 py-2 m-1 text-sm md:text-md rounded-md text-white hover:bg-blue-500 bg-red-500" value="Out of stock"/>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                    
+            </div>
+            <div class="flex justify-center w-full my-10">   
+                    <nav aria-label="Page navigation example bg-green-300">
+                        <ul class="inline-flex -space-x-px">   
+                        {% if page_obj.has_previous %}
+                            <li>
+                                <a 
+                                    href="?page={{page_obj.previous_page_number}}"
+                                    class="px-3 py-2 ml-0 leading-tight text-neutral-500 bg-white border border-neutral-300 rounded-l-lg hover:bg-neutral-100 hover:text-gray-700">Previous</a>
+                            </li>
+                        {% endif %}
+                        {% for page in paginator.page_range %}
+                            {% if page == page_obj.number  %}
+                            <!-- Pagina activa -->
+                                <li>
+                                    <a href="?page={{page}}" class="px-3 py-2 leading-tight text-gray-500 bg-primary text-white border border-neutral-300 hover:bg-neutral-100 hover:text-neutral-700">{{page}}</a>
+                                </li>  
+                            {% else %}           
+                                <li>
+                                    <a href="?page={{page}}" class="px-3 py-2 leading-tight text-neutral-500 bg-white border border-neutral-300 hover:bg-neutral-100 hover:text-neutral-700">{{page}}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li>
+                                <a href="?page={{page_obj.next_page_number}}" class="px-3 py-2 leading-tight text-neutral-500 bg-white border border-neutral-300 rounded-r-lg hover:bg-neutral-100 hover:text-neutral-700">Next</a>
+                            </li>                          
+                        {% endif %}
+                        </ul>
+                    </nav>   
+            </div>
+        </div>
+        {% include 'includes/footer.html' %}
+    </div>
+
+    
+{% endblock content %}
+    
