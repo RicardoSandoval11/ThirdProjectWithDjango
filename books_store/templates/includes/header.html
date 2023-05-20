@@ -88,34 +88,34 @@
                   Account
                 </a>
               </li>
+              <li>
+                <a
+                  href="{% url 'auth:logout' %}"
+                  class="text-dark hover:text-primary flex py-2 text-base font-medium lg:ml-9 lg:inline-flex"
+                >
+                  Logout
+                </a>
+              </li>
+              {%else%}
+              <li>
+                <a
+                  href="{% url 'auth:login' %}"
+                  class=" md:hidden text-dark hover:text-primary flex py-2 text-base font-medium lg:ml-9 lg:inline-flex"
+                >
+                  Login
+                </a>
+              </li>
+              <li>
+                <a
+                href="{% url 'auth:register' %}"
+                class="md:hidden text-dark hover:text-primary flex py-2 text-base font-medium lg:ml-9 lg:inline-flex"
+                >
+                  Sing Up
+                </a>
+              </li>
               {% endif %}
             </ul>
           </nav>
-        </div>
-        <div class="hidden justify-end pr-16 sm:flex lg:pr-0">
-          
-          {% if user.is_authenticated %}
-            <a
-              href="{% url 'auth:logout' %}"
-              class="text-dark hover:text-primary py-3 px-7 text-base font-medium"
-            >
-              Logout
-            </a>
-          {% else %}
-            <a
-              href="{% url 'auth:login' %}"
-              class="text-dark hover:text-primary py-3 px-7 text-base font-medium"
-            >
-              Login
-            </a>
-            <a
-              href="{% url 'auth:register' %}"
-              class="bg-primary rounded-lg py-3 px-7 text-base font-medium text-white hover:bg-opacity-90"
-            >
-              Sign Up
-            </a>
-          {% endif %}
-            
         </div>
       </div>
     </div>
